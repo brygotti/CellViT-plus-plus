@@ -39,14 +39,15 @@ COPY requirements.txt .
 COPY tissuevit.requirements.txt .
 
 # Create the environment (as root), install requirements and install packages that need special flags (those packages can't be installed directly via requirements.txt)
-RUN conda env create --yes -f environment_verbose.yaml -n ${ENV_NAME}
-RUN conda run -n ${ENV_NAME} pip install -r requirements.txt
-RUN conda run -n ${ENV_NAME} pip install -r tissuevit.requirements.txt
-RUN conda run -n ${ENV_NAME} pip install "torch==2.6.0+cu124" "torchvision==0.21.0+cu124" "torchaudio==2.6.0+cu124" --index-url https://download.pytorch.org/whl/cu124
-RUN conda run -n ${ENV_NAME} pip install "xformers==0.0.29.post3" --index-url https://download.pytorch.org/whl/cu124
-RUN conda run -n ${ENV_NAME} pip install "flash-attn==2.8.3" --no-build-isolation
-RUN conda run -n ${ENV_NAME} pip install "torch-scatter==2.1.2+pt26cu124" -f https://data.pyg.org/whl/torch-2.6.0+cu124.html
-RUN conda clean -afy
+RUN conda env create --yes -f environment_verbose.yaml -n ${ENV_NAME} && \
+    conda run -n ${ENV_NAME} pip install -r requirements.txt && \
+    conda run -n ${ENV_NAME} pip install -r tissuevit.requirements.txt && \
+    conda run -n ${ENV_NAME} pip install "torch==2.6.0+cu124" "torchvision==0.21.0+cu124" "torchaudio==2.6.0+cu124" --index-url https://download.pytorch.org/whl/cu124 && \
+    conda run -n ${ENV_NAME} pip install "xformers==0.0.29.post3" --index-url https://download.pytorch.org/whl/cu124 && \
+    conda run -n ${ENV_NAME} pip install "flash-attn==2.8.3" --no-build-isolation && \
+    conda run -n ${ENV_NAME} pip install "torch-scatter==2.1.2+pt26cu124" -f https://data.pyg.org/whl/torch-2.6.0+cu124.html && \
+    conda clean -afy && \
+    chmod 777 -R /opt/conda
 
 # Ensure conda is available in non-interactive shells and auto-activate env
 RUN echo ". /opt/conda/etc/profile.d/conda.sh" >> /root/.bashrc && \
@@ -57,9 +58,6 @@ RUN echo ". /opt/conda/etc/profile.d/conda.sh" >> /root/.bashrc && \
 
 # Use bash with conda support for subsequent RUNs
 SHELL ["/bin/bash", "-ic"]
-
-# Optionally relax permissions so non-root user can read/execute env
-RUN chmod 777 -R /opt/conda
 
 # LDAP / user settings
 ARG LDAP_USERNAME="gotti"

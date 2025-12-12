@@ -1,0 +1,18 @@
+biopython
+fair-esm
+readimc
+tifffile
+umap-learn
+notebook
+ipywidgets
+POT
+loguru
+transformers
+multimil
+imbalanced-learn
+omegaconf
+fvcore
+iopath
+submitit
+--extra-index-url https://pypi.nvidia.com
+cuml-cu12

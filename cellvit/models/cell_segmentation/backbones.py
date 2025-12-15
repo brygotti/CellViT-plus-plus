@@ -8,9 +8,11 @@
 # University Medicine Essen
 
 from typing import Callable, List, Tuple, Type
+from cellvit.models.base.hibou_vision_transformer import build_model
 from einops import rearrange
 import torch
 import torch.nn as nn
+import torchvision
 
 from cellvit.models.base.vision_transformer import VisionTransformer
 from cellvit.models.utils.sam_utils import ImageEncoderViT
@@ -267,3 +269,47 @@ class ViTCellViTVirchow(TimmVisionTransformer):
         output = self.head(x[:, 0])
 
         return output, x[:, 0], extracted_layers
+
+
+# Taken from: https://github.com/HistAI/hibou/blob/c453bbe4dab0fec6f7df343b09ea87048629c58d/hibou/models/cellvit/cellvit.py
+class HibouEncoder(nn.Module):
+    def __init__(
+        self,
+        path=None,
+        extract_layers=[6, 12, 18, 24],
+        num_classes=0,
+        dropout_rate=0,
+        attention_dropout_rate=0,
+    ):
+        super().__init__()
+        self.path = path
+        self.encoder = build_model(
+            weights_path=path,
+            img_size=224,
+            arch="vit_large",
+            patch_size=14,
+            layerscale=1e-5,
+            ffn_layer="swiglufused",
+            block_chunks=0,
+            qkv_bias=True,
+            proj_bias=True,
+            ffn_bias=True,
+            num_register_tokens=4,
+            interpolate_offset=0,
+            interpolate_antialias=True,
+            dropout_rate=dropout_rate,
+            attention_dropout_rate=attention_dropout_rate,
+        )
+        self.extract_layers = extract_layers
+        self.head = nn.Linear(1024, num_classes) if num_classes > 0 else nn.Identity()
+
+    def forward(self, x):
+        x = torchvision.transforms.functional.resize(x, (224, 224))
+        output = self.encoder.forward_features(x, return_intermediate=True)
+        intermediate = output["intermediate"]
+        intermediate = [intermediate[i - 1] for i in self.extract_layers]
+        intermediate = [
+            torch.cat((intermediate[i][:, :1], intermediate[i][:, 5:]), dim=1)
+            for i in range(len(intermediate))
+        ]
+        return self.head(output["x_norm_clstoken"]), None, intermediate

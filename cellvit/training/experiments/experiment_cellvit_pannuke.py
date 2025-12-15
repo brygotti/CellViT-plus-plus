@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Callable, Tuple, Union
 
 import albumentations as A
+from cellvit.models.cell_segmentation.cellvit_hibou import CellViTHibou
 import torch
 import torch.nn as nn
 import wandb
@@ -555,6 +556,7 @@ class ExperimentCellVitPanNuke(BaseExperiment):
             "uni",
             "virchow",
             "virchow2",
+            "hibou-l",
         ]
         if backbone_type.lower() not in implemented_backbones:
             raise NotImplementedError(
@@ -666,6 +668,29 @@ class ExperimentCellVitPanNuke(BaseExperiment):
             self.logger.info(
                 f"Loaded CellViTVirchow2 model with backbone: {backbone_type}"
             )
+
+        if backbone_type.lower() in ["hibou-l"]:
+            model = CellViTHibou(
+                hibou_path=pretrained_encoder,
+                num_nuclei_classes=self.run_conf["data"]["num_nuclei_classes"],
+                num_tissue_classes=self.run_conf["data"]["num_tissue_classes"],
+                hibou_structure=backbone_type,
+                drop_rate=self.run_conf["training"].get("drop_rate", 0),
+                # HIBOU-TODO: why ?
+                # ignoring attn_drop_rate and drop_path_rate for hibou as done for cellvit_sam
+                regression_loss=regression_loss,
+            )
+            if pretrained_model is not None:
+                self.logger.info(
+                    f"Loading pretrained CellViT model from path: {pretrained_model}"
+                )
+                cellvit_pretrained = torch.load(pretrained_model, map_location="cpu")
+                self.logger.info(model.load_state_dict(cellvit_pretrained, strict=True))
+            model.freeze_encoder()
+            self.logger.info(
+                f"Loaded CellViTHibou model with backbone: {backbone_type}"
+            )
+
         self.logger.info(f"\nModel: {model}")
         model = model.to("cpu")
         self.logger.info(

@@ -48,6 +48,7 @@ from cellvit.models.cell_segmentation.cellvit_sam import CellViTSAM
 from cellvit.models.cell_segmentation.cellvit_uni import CellViTUNI
 from cellvit.models.cell_segmentation.cellvit_virchow import CellViTVirchow
 from cellvit.models.cell_segmentation.cellvit_virchow2 import CellViTVirchow2
+from cellvit.models.cell_segmentation.cellvit_hibou import CellViTHibou
 
 from cellvit.training.datasets.dataset_coordinator import select_dataset
 from cellvit.training.utils.metrics import (
@@ -144,7 +145,9 @@ class InferenceCellViT:
 
     def get_model(
         self, model_type: str
-    ) -> Union[CellViT, CellViT256, CellViTSAM, CellViTUNI, CellViTVirchow]:
+    ) -> Union[
+        CellViT, CellViT256, CellViTSAM, CellViTUNI, CellViTVirchow, CellViTHibou
+    ]:
         """Return the trained model for inference
 
         Args:
@@ -161,6 +164,7 @@ class InferenceCellViT:
             "CellViTUNI",
             "CellViTVirchow",
             "CellViTVirchow2",
+            "CellViTHibou",
         ]
         if model_type not in implemented_models:
             raise NotImplementedError(
@@ -211,11 +215,21 @@ class InferenceCellViT:
                 num_nuclei_classes=self.run_conf["data"]["num_nuclei_classes"],
                 num_tissue_classes=self.run_conf["data"]["num_tissue_classes"],
             )
+        elif model_type == "CellViTHibou":
+            model = CellViTHibou(
+                hibou_path=None,
+                num_nuclei_classes=self.run_conf["data"]["num_nuclei_classes"],
+                num_tissue_classes=self.run_conf["data"]["num_tissue_classes"],
+                hibou_structure=self.run_conf["model"]["backbone"],
+                regression_loss=self.run_conf["model"].get("regression_loss", False),
+            )
         return model
 
-    def setup_patch_inference(
-        self, test_folds: List[int] = None
-    ) -> tuple[Union[CellViT, CellViT256, CellViTSAM], DataLoader, dict,]:
+    def setup_patch_inference(self, test_folds: List[int] = None) -> tuple[
+        Union[CellViT, CellViT256, CellViTSAM],
+        DataLoader,
+        dict,
+    ]:
         """Setup patch inference by defining a patch-wise datalaoder and loading the model checkpoint
 
         Args:

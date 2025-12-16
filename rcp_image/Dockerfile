@@ -56,6 +56,10 @@ RUN echo ". /opt/conda/etc/profile.d/conda.sh" >> /root/.bashrc && \
     echo ". /opt/conda/etc/profile.d/conda.sh" >> /etc/skel/.bashrc && \
     echo "conda activate ${ENV_NAME}" >> /etc/skel/.bashrc
 
+# Install libvips (as root)
+RUN apt-get update \
+    && apt-get install libvips-dev --no-install-recommends -y
+
 # Use bash with conda support for subsequent RUNs
 SHELL ["/bin/bash", "-ic"]
 
@@ -65,8 +69,11 @@ ARG LDAP_UID=226403
 ARG LDAP_GROUPNAME="rcp-runai-course-cs-433-group08"
 ARG LDAP_GID=86764
 
+# Password is "12345"
 RUN groupadd ${LDAP_GROUPNAME} --gid ${LDAP_GID} && \
-    useradd -m -s /bin/bash -g ${LDAP_GROUPNAME} -u ${LDAP_UID} ${LDAP_USERNAME}
+    useradd -m -p '$6$v45mq2mleqYge2AX$2CT7LFbRPup9aOrMLPC4Kmwb8dbXVogmYBPCMY1QnW8cmQDvsV7EatU9Gw6N5M4eFEmqabPG0cHNClW3KDFtL.' -s /bin/bash -g ${LDAP_GROUPNAME} -u ${LDAP_UID} ${LDAP_USERNAME} && \
+    usermod -aG sudo ${LDAP_USERNAME} && \
+    echo "${LDAP_USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${LDAP_USERNAME}
 
 # Switch to the local user
 USER ${LDAP_USERNAME}

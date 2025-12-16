@@ -49,6 +49,7 @@ from cellvit.models.cell_segmentation.cellvit_uni import CellViTUNI
 from cellvit.models.cell_segmentation.cellvit_virchow import CellViTVirchow
 from cellvit.models.cell_segmentation.cellvit_virchow2 import CellViTVirchow2
 from cellvit.models.cell_segmentation.cellvit_hibou import CellViTHibou
+from cellvit.models.cell_segmentation.cellvit_mmvirtues import CellViTMMVirtues
 
 from cellvit.training.datasets.dataset_coordinator import select_dataset
 from cellvit.training.utils.metrics import (
@@ -146,7 +147,13 @@ class InferenceCellViT:
     def get_model(
         self, model_type: str
     ) -> Union[
-        CellViT, CellViT256, CellViTSAM, CellViTUNI, CellViTVirchow, CellViTHibou
+        CellViT,
+        CellViT256,
+        CellViTSAM,
+        CellViTUNI,
+        CellViTVirchow,
+        CellViTHibou,
+        CellViTMMVirtues,
     ]:
         """Return the trained model for inference
 
@@ -165,6 +172,7 @@ class InferenceCellViT:
             "CellViTVirchow",
             "CellViTVirchow2",
             "CellViTHibou",
+            "CellViTMMVirtues",
         ]
         if model_type not in implemented_models:
             raise NotImplementedError(
@@ -221,6 +229,16 @@ class InferenceCellViT:
                 num_nuclei_classes=self.run_conf["data"]["num_nuclei_classes"],
                 num_tissue_classes=self.run_conf["data"]["num_tissue_classes"],
                 hibou_structure=self.run_conf["model"]["backbone"],
+                regression_loss=self.run_conf["model"].get("regression_loss", False),
+            )
+        elif model_type == "CellViTMMVirtues":
+            model = CellViTMMVirtues(
+                mmvirtues_weights_path=self.run_conf["model"].get(
+                    "mmvirtues_weights_path"
+                ),
+                mmvirtues_root=self.run_conf["model"].get("mmvirtues_root", None),
+                num_nuclei_classes=self.run_conf["data"]["num_nuclei_classes"],
+                num_tissue_classes=self.run_conf["data"]["num_tissue_classes"],
                 regression_loss=self.run_conf["model"].get("regression_loss", False),
             )
         return model

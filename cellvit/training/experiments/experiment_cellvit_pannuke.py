@@ -15,6 +15,7 @@ from typing import Callable, Tuple, Union
 
 import albumentations as A
 from cellvit.models.cell_segmentation.cellvit_hibou import CellViTHibou
+from cellvit.models.cell_segmentation.cellvit_mmvirtues import CellViTMMVirtues
 import torch
 import torch.nn as nn
 import wandb
@@ -557,6 +558,7 @@ class ExperimentCellVitPanNuke(BaseExperiment):
             "virchow",
             "virchow2",
             "hibou-l",
+            "mmvirtues",
         ]
         if backbone_type.lower() not in implemented_backbones:
             raise NotImplementedError(
@@ -689,6 +691,30 @@ class ExperimentCellVitPanNuke(BaseExperiment):
             model.freeze_encoder()
             self.logger.info(
                 f"Loaded CellViTHibou model with backbone: {backbone_type}"
+            )
+
+        if backbone_type.lower() == "mmvirtues":
+            model = CellViTMMVirtues(
+                mmvirtues_weights_path=pretrained_encoder
+                if pretrained_encoder is not None
+                else self.run_conf["model"].get("mmvirtues_weights_path"),
+                num_nuclei_classes=self.run_conf["data"]["num_nuclei_classes"],
+                num_tissue_classes=self.run_conf["data"]["num_tissue_classes"],
+                mmvirtues_root=self.run_conf["model"].get("mmvirtues_root", None),
+                drop_rate=self.run_conf["training"].get("drop_rate", 0),
+                attn_drop_rate=self.run_conf["training"].get("attn_drop_rate", 0),
+                drop_path_rate=self.run_conf["training"].get("drop_path_rate", 0),
+                regression_loss=regression_loss,
+            )
+            if pretrained_model is not None:
+                self.logger.info(
+                    f"Loading pretrained CellViT model from path: {pretrained_model}"
+                )
+                cellvit_pretrained = torch.load(pretrained_model, map_location="cpu")
+                self.logger.info(model.load_state_dict(cellvit_pretrained, strict=True))
+            model.freeze_encoder()
+            self.logger.info(
+                f"Loaded CellViTMMVirtues model with backbone: {backbone_type}"
             )
 
         self.logger.info(f"\nModel: {model}")

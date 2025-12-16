@@ -1,9 +1,7 @@
 # Adapted from: https://github.com/HistAI/hibou/blob/c453bbe4dab0fec6f7df343b09ea87048629c58d/hibou/models/cellvit/cellvit.py
 
 from pathlib import Path
-from typing import List, Union
-
-from pyparsing import Literal
+from typing import List, Union, Literal
 
 import torch
 

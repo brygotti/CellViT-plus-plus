@@ -44,7 +44,7 @@ RUN conda env create --yes -f environment_verbose.yaml -n ${ENV_NAME} && \
     conda run -n ${ENV_NAME} pip install -r tissuevit.requirements.txt && \
     conda run -n ${ENV_NAME} pip install "torch==2.6.0+cu124" "torchvision==0.21.0+cu124" "torchaudio==2.6.0+cu124" --index-url https://download.pytorch.org/whl/cu124 && \
     conda run -n ${ENV_NAME} pip install "xformers==0.0.29.post3" --index-url https://download.pytorch.org/whl/cu124 && \
-    conda run -n ${ENV_NAME} pip install "flash-attn==2.8.3" --no-build-isolation && \
+    conda run -n ${ENV_NAME} pip install --no-cache-dir "https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.4.post1/flash_attn-2.7.4.post1+cu12torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl" && \
     conda run -n ${ENV_NAME} pip install "torch-scatter==2.1.2+pt26cu124" -f https://data.pyg.org/whl/torch-2.6.0+cu124.html && \
     conda clean -afy && \
     chmod 777 -R /opt/conda

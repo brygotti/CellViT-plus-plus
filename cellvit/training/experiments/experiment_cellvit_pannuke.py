@@ -718,9 +718,11 @@ class ExperimentCellVitPanNuke(BaseExperiment):
             )
 
         self.logger.info(f"\nModel: {model}")
-        # model = model.to("cpu")
+        # FIX: Ensure model and summary run on the correct GPU device
+        device = f"cuda:{self.run_conf['gpu']}"
+        model = model.to(device)
         self.logger.info(
-            f"\n{summary(model, input_size=(1, 3, 256, 256), device='cuda')}" # device='cpu')}"
+            f"\n{summary(model, input_size=(1, 3, 256, 256), device=device)}"
         )
 
         return model

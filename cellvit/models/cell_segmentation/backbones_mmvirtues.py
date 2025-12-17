@@ -48,7 +48,8 @@ class MMVirtuesEncoder(nn.Module):
 
         _ensure_mmvirtues_on_path(self.mmvirtues_root)
         from omegaconf import OmegaConf
-        from modules.mmvirtues import build_mmvirtues_model
+        from mmvirtues_modules import build_mmvirtues_model
+        
 
         cfg = OmegaConf.load(self.weights_dir / "config.yaml")
         # Override the marker embedding path before mmVIRTUES rewrites it

@@ -718,9 +718,9 @@ class ExperimentCellVitPanNuke(BaseExperiment):
             )
 
         self.logger.info(f"\nModel: {model}")
-        model = model.to("cpu")
+        # model = model.to("cpu")
         self.logger.info(
-            f"\n{summary(model, input_size=(1, 3, 256, 256), device='cpu')}"
+            f"\n{summary(model, input_size=(1, 3, 256, 256), device='cuda')}" # device='cpu')}"
         )
 
         return model

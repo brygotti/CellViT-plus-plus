@@ -1,15 +1,15 @@
 logging:
   mode: online
   project: Cell-Segmentation
-  notes: CellViT-Hibou-L
-  log_comment: CellViT-Hibou-L-Fold-2
+  notes: CellViT-SAM-H
+  log_comment: CellViT-SAM-H-Fold-2
   tags:
   - Fold-2
-  - Hibou-L
+  - SAM-H
   wandb_dir: .
-  log_dir: ./logs/PanNuke/CellViTHV/Hibou-L/Fold-2
+  log_dir: ./logs/PanNuke/CellViTHV/SAM-H-reproduced/Fold-2
   level: Debug
-  group: CellViT-Hibou-L
+  group: CellViT-SAM-H
 random_seed: 19
 gpu: 0
 data:
@@ -24,8 +24,8 @@ data:
   num_nuclei_classes: 6
   num_tissue_classes: 19
 model:
-  backbone: Hibou-L
-  pretrained_encoder: /scratch/checkpoints/hibou/hibou-l.pth
+  backbone: SAM-H
+  pretrained_encoder: /scratch/checkpoints/sam/sam_vit_h.pth
   shared_skip_connections: true
 loss:
   nuclei_binary_map:

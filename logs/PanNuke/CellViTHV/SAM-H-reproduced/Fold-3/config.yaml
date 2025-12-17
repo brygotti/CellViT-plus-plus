@@ -1,31 +1,31 @@
 logging:
   mode: online
   project: Cell-Segmentation
-  notes: CellViT-Hibou-L
-  log_comment: CellViT-Hibou-L-Fold-2
+  notes: CellViT-SAM-H
+  log_comment: CellViT-SAM-H-Fold-3
   tags:
-  - Fold-2
-  - Hibou-L
+  - Fold-3
+  - SAM-H
   wandb_dir: .
-  log_dir: ./logs/PanNuke/CellViTHV/Hibou-L/Fold-2
+  log_dir: ./logs/PanNuke/CellViTHV/SAM-H-reproduced/Fold-3
   level: Debug
-  group: CellViT-Hibou-L
+  group: CellViT-SAM-H
 random_seed: 19
 gpu: 0
 data:
   dataset: PanNuke
   dataset_path: /scratch/pannuke_dataset_processed
   train_folds:
-  - 1
-  val_folds:
-  - 0
-  test_folds:
   - 2
+  val_folds:
+  - 1
+  test_folds:
+  - 0
   num_nuclei_classes: 6
   num_tissue_classes: 19
 model:
-  backbone: Hibou-L
-  pretrained_encoder: /scratch/checkpoints/hibou/hibou-l.pth
+  backbone: SAM-H
+  pretrained_encoder: /scratch/checkpoints/sam/sam_vit_h.pth
   shared_skip_connections: true
 loss:
   nuclei_binary_map:

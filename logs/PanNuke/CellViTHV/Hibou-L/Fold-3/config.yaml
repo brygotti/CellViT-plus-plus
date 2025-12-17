@@ -6,14 +6,15 @@ logging:
   tags:
   - Fold-3
   - Hibou-L
-  wandb_dir: ./CellViT/results/PanNuke
+  wandb_dir: .
+  log_dir: ./logs/PanNuke/CellViTHV/Hibou-L/Fold-3
   level: Debug
   group: CellViT-Hibou-L
 random_seed: 19
 gpu: 0
 data:
   dataset: PanNuke
-  dataset_path: ./PanNuke/digitalhistologyhub
+  dataset_path: /scratch/pannuke_dataset_processed
   train_folds:
   - 2
   val_folds:
@@ -24,7 +25,7 @@ data:
   num_tissue_classes: 19
 model:
   backbone: Hibou-L
-  pretrained_encoder: ./models/pretrained/SAM/sam_vit_h.pth
+  pretrained_encoder: /scratch/checkpoints/hibou/hibou-l.pth
   shared_skip_connections: true
 loss:
   nuclei_binary_map:

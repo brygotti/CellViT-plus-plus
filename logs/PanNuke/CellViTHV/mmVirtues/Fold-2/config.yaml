@@ -25,7 +25,7 @@ data:
   num_tissue_classes: 19
 model:
   backbone: mmvirtues
-  mmvirtues_weights_path: ./cellvit/mmvirtues_weights
+  mmvirtues_weights_path: /scratch/mmvirtues_orion_dataset/virtues_example/mmvirtues_weights
   regression_loss: false
 loss:
   nuclei_binary_map:

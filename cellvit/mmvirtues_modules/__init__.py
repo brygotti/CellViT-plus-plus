@@ -18,7 +18,8 @@ import torch
 logger = logging.getLogger("dinov2")
 
 def build_mmvirtues_model(cfg, only_teacher=False, ckpt_path=None):
-    cfg.marker_embedding_dir = "/workspace/mmvirtues_orion_dataset/virtues_example/esm2_t30_150M_UR50D" if "esm2_t30_150M_UR50D" in cfg.marker_embedding_dir else cfg.marker_embedding_dir
+    print(cfg.marker_embedding_dir)
+    cfg.marker_embedding_dir = "cellvit/esm2_t30_150M_UR50D" if "esm2_t30_150M_UR50D" in cfg.marker_embedding_dir else cfg.marker_embedding_dir
     esm_embds = load_marker_embeddings(cfg.marker_embedding_dir)
     esm_embds = esm_embds.to(dtype=torch.float16)
     virtues_encoder = build_flex_dual_virtues_encoder(cfg, esm_embds, only_teacher=only_teacher, pos_emb="rope")

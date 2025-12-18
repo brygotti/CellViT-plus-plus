@@ -11,15 +11,15 @@ import torch.nn as nn
 import torchvision.transforms.functional as TF
 
 
-def _ensure_mmvirtues_on_path(mmvirtues_root: Path) -> None:
-    """Add the mmVIRTUES codebase (and helper utils) to ``sys.path`` if missing."""
+# def _ensure_mmvirtues_on_path(mmvirtues_root: Path) -> None:
+#     """Add the mmVIRTUES codebase (and helper utils) to ``sys.path`` if missing."""
 
-    root = str(mmvirtues_root.resolve())
-    utils_root = str((mmvirtues_root / "datasets_loading").resolve())
+#     root = str(mmvirtues_root.resolve())
+#     utils_root = str((mmvirtues_root / "datasets_loading").resolve())
 
-    for p in (root, utils_root):
-        if p not in sys.path:
-            sys.path.insert(0, p)
+#     for p in (root, utils_root):
+#         if p not in sys.path:
+#             sys.path.insert(0, p)
 
 
 class MMVirtuesEncoder(nn.Module):
@@ -46,7 +46,7 @@ class MMVirtuesEncoder(nn.Module):
 
         self.marker_embeddings_dir = self._ensure_marker_embeddings()
 
-        _ensure_mmvirtues_on_path(self.mmvirtues_root)
+        # _ensure_mmvirtues_on_path(self.mmvirtues_root)
         from omegaconf import OmegaConf
         from mmvirtues_modules import build_mmvirtues_model
         

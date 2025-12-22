@@ -4,8 +4,8 @@ logging:
   notes: CellViT-SAM-H
   log_comment: CellViT-SAM-H-Fold-3
   tags:
-  - Fold-3
-  - SAM-H
+    - Fold-3
+    - SAM-H
   wandb_dir: .
   log_dir: ./logs/PanNuke/CellViTHV/SAM-H-reproduced/Fold-3
   level: Debug
@@ -16,11 +16,11 @@ data:
   dataset: PanNuke
   dataset_path: /scratch/pannuke_dataset_processed
   train_folds:
-  - 2
+    - 2
   val_folds:
-  - 1
+    - 1
   test_folds:
-  - 0
+    - 0
   num_nuclei_classes: 6
   num_tissue_classes: 19
 model:
@@ -60,8 +60,6 @@ loss:
       weight: 0.1
 training:
   drop_rate: 0
-  attn_drop_rate: 0.1
-  drop_path_rate: 0.1
   batch_size: 16
   epochs: 130
   optimizer: AdamW
@@ -72,8 +70,8 @@ training:
       gamma: 0.85
   optimizer_hyperparameter:
     betas:
-    - 0.85
-    - 0.95
+      - 0.85
+      - 0.95
     lr: 0.0003
     weight_decay: 0.0001
   unfreeze_epoch: 25
@@ -110,13 +108,13 @@ transformations:
     p: 0.2
   normalize:
     mean:
-    - 0.5
-    - 0.5
-    - 0.5
+      - 0.5
+      - 0.5
+      - 0.5
     std:
-    - 0.5
-    - 0.5
-    - 0.5
+      - 0.5
+      - 0.5
+      - 0.5
 eval_checkpoint: latest_checkpoint.pth
 run_sweep: false
 agent: null

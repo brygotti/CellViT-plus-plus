@@ -695,15 +695,17 @@ class ExperimentCellVitPanNuke(BaseExperiment):
 
         if backbone_type.lower() == "mmvirtues":
             model = CellViTMMVirtues(
-                mmvirtues_weights_path=pretrained_encoder
-                if pretrained_encoder is not None
-                else self.run_conf["model"].get("mmvirtues_weights_path"),
+                mmvirtues_weights_path=(
+                    pretrained_encoder
+                    if pretrained_encoder is not None
+                    else self.run_conf["model"].get("mmvirtues_weights_path")
+                ),
                 num_nuclei_classes=self.run_conf["data"]["num_nuclei_classes"],
                 num_tissue_classes=self.run_conf["data"]["num_tissue_classes"],
                 mmvirtues_root=self.run_conf["model"].get("mmvirtues_root", None),
                 drop_rate=self.run_conf["training"].get("drop_rate", 0),
-                attn_drop_rate=self.run_conf["training"].get("attn_drop_rate", 0),
-                drop_path_rate=self.run_conf["training"].get("drop_path_rate", 0),
+                # mmVirtues-TODO: why ?
+                # ignoring attn_drop_rate and drop_path_rate for hibou as done for cellvit_sam
                 regression_loss=regression_loss,
             )
             if pretrained_model is not None:

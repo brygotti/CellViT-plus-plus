@@ -60,8 +60,6 @@ loss:
       weight: 0.1
 training:
   drop_rate: 0
-  attn_drop_rate: 0.1
-  drop_path_rate: 0.1
   batch_size: 16
   epochs: 130
   optimizer: AdamW

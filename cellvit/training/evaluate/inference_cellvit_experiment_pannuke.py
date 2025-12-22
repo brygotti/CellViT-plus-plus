@@ -144,9 +144,7 @@ class InferenceCellViT:
         """Setup automated mixed precision (amp) for inference."""
         self.mixed_precision = self.run_conf["training"].get("mixed_precision", False)
 
-    def get_model(
-        self, model_type: str
-    ) -> Union[
+    def get_model(self, model_type: str) -> Union[
         CellViT,
         CellViT256,
         CellViTSAM,
@@ -264,7 +262,9 @@ class InferenceCellViT:
         """
         # get model for inference
         checkpoint = torch.load(
-            self.run_dir / "checkpoints" / self.checkpoint_name, map_location="cpu"
+            self.run_dir / "checkpoints" / self.checkpoint_name,
+            map_location="cpu",
+            weights_only=False,
         )
         model = self.get_model(model_type=checkpoint["arch"])
         self.logger.info(
